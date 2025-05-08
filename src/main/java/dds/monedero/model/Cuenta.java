@@ -70,7 +70,7 @@ public class Cuenta {
     return getMovimientos().stream()
         .filter(movimiento -> !movimiento.esDeposito() && movimiento.getFecha().equals(fecha))
         .mapToDouble(Movimiento::getMonto)
-        .sum(); //ACA DEBE HABER
+        .sum();
   }
 
   public List<Movimiento> getMovimientos() {
