@@ -44,12 +44,12 @@ public class Cuenta {
     montoPositivo(cuanto);
 
     if (getMovimientos().stream()
-        .filter(movimiento -> movimiento.fueDepositado(LocalDate.now()))
-        .count() >= 3) { //ACA DEBE HABER
+        .filter(movimiento -> movimiento.huboMovimiento(LocalDate.now()))
+        .count() >= 3) {
       throw new MaximaCantidadDepositosException("Ya excedio los " + 3 + " depositos diarios");
     }
 
-    new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);
+    new Deposito(LocalDate.now(), cuanto).agregateA(this);
   }
 
   public void sacar(double cuanto) {
@@ -58,19 +58,17 @@ public class Cuenta {
 
     validacionDeExtraccion(cuanto);
 
-    new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);
+    new Extraccion(LocalDate.now(), cuanto).agregateA(this);
   }
 
-  public void agregarMovimiento(LocalDate fecha, double cuanto, boolean esDeposito) {
+  public void agregarMovimiento(Movimiento movimiento) {
 
-    var movimiento = new Movimiento(fecha, cuanto, esDeposito);
-
-    movimientos.add(movimiento); //ACA DEBE HABER
+    movimientos.add(movimiento);
   }
 
   public double getMontoExtraidoA(LocalDate fecha) {
     return getMovimientos().stream()
-        .filter(movimiento -> !movimiento.isDeposito() && movimiento.getFecha().equals(fecha))
+        .filter(movimiento -> !movimiento.esDeposito() && movimiento.getFecha().equals(fecha))
         .mapToDouble(Movimiento::getMonto)
         .sum(); //ACA DEBE HABER
   }
